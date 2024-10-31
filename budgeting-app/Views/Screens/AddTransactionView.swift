@@ -5,23 +5,28 @@
 //  Created by Ivan Apostolovski on 31.10.24.
 //
 
-import SwiftUICore
 import SwiftUI
-
 
 struct AddTransactionView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: TransactionViewModel
     @State private var amount = ""
     @State private var category = TransactionCategory.other
-    @State private var isIncome = false
+    @State private var transactionType = "Expense" // Use a string or enum for clarity
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
-                Section(header: Text("Amount")) {
-                    TextField("Enter amount", text: $amount)
+                Section(header: Text("Transaction Details")) {
+                    TextField("Amount", text: $amount)
                         .keyboardType(.decimalPad)
+                        .textFieldStyle(.roundedBorder)
+                    
+                    Picker("Type", selection: $transactionType) {
+                        Text("Expense").tag("Expense")
+                        Text("Income").tag("Income")
+                    }
+                    .pickerStyle(.segmented)
                 }
                 
                 Section(header: Text("Category")) {
@@ -29,12 +34,6 @@ struct AddTransactionView: View {
                         ForEach(TransactionCategory.allCases, id: \.self) { category in
                             Text(category.rawValue).tag(category)
                         }
-                    }
-                }
-                
-                Section {
-                    Toggle(isOn: $isIncome) {
-                        Text("Is Income")
                     }
                 }
             }
@@ -46,11 +45,12 @@ struct AddTransactionView: View {
                             viewModel.addTransaction(
                                 amount: amountValue,
                                 category: category,
-                                isIncome: isIncome
+                                isIncome: transactionType == "Income"
                             )
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
+                    .disabled(amount.isEmpty)
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {

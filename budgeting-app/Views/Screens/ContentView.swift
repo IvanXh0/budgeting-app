@@ -13,41 +13,17 @@ struct ContentView: View {
     @StateObject var viewModel = TransactionViewModel()
     @State private var showAddTransaction = false
     @State private var selectedTab = 0
-    
+
     var body: some View {
         TabView(selection: $selectedTab) {
-            // Main View with Daily and Monthly Summary
-            NavigationView {
+            // Dashboard Tab
+            NavigationStack {
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Daily Summary Section
-                        VStack(alignment: .leading) {
-                            Text("Today's Transactions")
-                                .font(.title2)
-                                .bold()
-                                .padding(.horizontal)
-                            
-                            DailySummaryView(transactions: viewModel.dailyTransactions())
-                                .background(RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color(UIColor.systemBackground))
-                                    .shadow(radius: 2))
-                                .padding(.horizontal)
-                        }
-                        
-                        Divider()
-                            .padding(.horizontal)
-                        
-                        // Monthly Summary Section
-                        VStack(alignment: .leading) {
-                            Text("Monthly Overview")
-                                .font(.title2)
-                                .bold()
-                                .padding(.horizontal)
-                            
-                            MonthlySummaryView(summary: viewModel.monthlySummary())
-                        }
+                        DailySummarySection(viewModel: viewModel)
+                        MonthlySummarySection(viewModel: viewModel)
                     }
-                    .padding(.vertical)
+                    .padding()
                 }
                 .navigationTitle("Budget Tracker")
                 .toolbar {
@@ -55,6 +31,7 @@ struct ContentView: View {
                         Button(action: { showAddTransaction = true }) {
                             Image(systemName: "plus")
                         }
+                        .accessibilityLabel("Add Transaction")
                     }
                 }
             }
@@ -62,8 +39,8 @@ struct ContentView: View {
                 Label("Dashboard", systemImage: "house.fill")
             }
             .tag(0)
-            
-            // Calendar View Tab
+
+            // Calendar Tab
             TransactionCalendarView(viewModel: viewModel)
                 .tabItem {
                     Label("Calendar", systemImage: "calendar")

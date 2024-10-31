@@ -12,9 +12,9 @@ import SwiftUI
 struct TransactionCalendarView: View {
     @ObservedObject var viewModel: TransactionViewModel
     @State private var selectedDate = Date()
-    
+
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 DatePicker(
                     "Select Date",
@@ -23,8 +23,8 @@ struct TransactionCalendarView: View {
                 )
                 .datePickerStyle(.graphical)
                 .padding()
-                
-                if let dayTransactions = transactionsForDate() {
+
+                if let dayTransactions = transactionsForDate(), !dayTransactions.isEmpty {
                     List {
                         ForEach(dayTransactions) { transaction in
                             TransactionRow(transaction: transaction)
@@ -40,7 +40,7 @@ struct TransactionCalendarView: View {
             .navigationTitle("Calendar")
         }
     }
-    
+
     private func transactionsForDate() -> [Transaction]? {
         let filtered = viewModel.transactions.filter {
             Calendar.current.isDate($0.date, inSameDayAs: selectedDate)

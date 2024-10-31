@@ -10,25 +10,25 @@ import SwiftUICore
 
 struct DailySummaryView: View {
     let transactions: [Transaction]
-    
+
     var dailyTotal: Double {
         let income = transactions.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
         let expenses = transactions.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
         return income - expenses
     }
-    
+
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             HStack {
                 Text("Today's Overview")
                     .font(.headline)
                 Spacer()
-                Text(String(format: "%.2f", dailyTotal))
+                Text(dailyTotal >= 0 ? "+$\(dailyTotal, specifier: "%.2f")" : "-$\(abs(dailyTotal), specifier: "%.2f")")
                     .font(.headline)
                     .foregroundColor(dailyTotal >= 0 ? .green : .red)
             }
             .padding(.horizontal)
-            
+
             if transactions.isEmpty {
                 Text("No transactions today")
                     .foregroundColor(.gray)

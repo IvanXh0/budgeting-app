@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUICore
 
 enum TransactionCategory: String, CaseIterable, Comparable {
     case food = "Food"
@@ -26,4 +27,30 @@ struct Transaction: Identifiable {
     var category: TransactionCategory
     var date: Date
     var isIncome: Bool
+}
+
+extension TransactionCategory {
+    var color: Color {
+        switch self {
+        case .food: return .blue
+        case .transport: return .green
+        case .shopping: return .purple
+        case .bills: return .red
+        case .entertainment: return .orange
+        case .health: return .pink
+        case .other: return .gray
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .food: return "fork.knife"
+        case .transport: return "car.fill"
+        case .shopping: return "cart.fill"
+        case .bills: return "doc.text.fill"
+        case .entertainment: return "gamecontroller.fill"
+        case .health: return "heart.fill"
+        case .other: return "questionmark.circle.fill"
+        }
+    }
 }

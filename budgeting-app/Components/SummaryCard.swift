@@ -6,25 +6,29 @@
 //
 
 import SwiftUICore
+import UIKit
 
 
 struct SummaryCard: View {
     let title: String
     let amount: Double
     let color: Color
-    
+
     var body: some View {
         VStack {
             Text(title)
                 .font(.caption)
                 .foregroundColor(.gray)
-            Text(String(format: "$%.2f", abs(amount)))
+            Text("$\(abs(amount), specifier: "%.2f")")
                 .font(.headline)
                 .foregroundColor(color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
         .padding()
+        .frame(maxWidth: .infinity)
         .background(RoundedRectangle(cornerRadius: 10)
-            .fill(Color.white)
+            .fill(Color(UIColor.systemBackground))
             .shadow(radius: 2))
     }
 }
