@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct BudgetApp: App {
+    @StateObject private var categoryManager = CategoryManager()
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(categoryManager)
         }
     }
 }

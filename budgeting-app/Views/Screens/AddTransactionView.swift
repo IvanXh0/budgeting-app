@@ -10,14 +10,22 @@ import SwiftUI
 struct AddTransactionView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: TransactionViewModel
+    @EnvironmentObject var categoryManager: CategoryManager
     @State private var amount = ""
-    @State private var category = TransactionCategory.food
     @State private var transactionType = "Expense"
-
-    private var availableCategories: [TransactionCategory] {
-        transactionType == "Income" ? TransactionCategory.incomeCategories : TransactionCategory.expenseCategories
+    @State private var selectedCategory: CategoryItem
+    
+    init(viewModel: TransactionViewModel, categoryManager: CategoryManager) {
+        self.viewModel = viewModel
+        let defaultCategory = categoryManager.expenseCategories.first ??
+            CategoryItem(name: "Other", icon: "questionmark.circle.fill", color: .gray, isIncome: false, isDefault: true)
+        _selectedCategory = State(initialValue: defaultCategory)
     }
-
+    
+    private var availableCategories: [CategoryItem] {
+        transactionType == "Income" ? categoryManager.incomeCategories : categoryManager.expenseCategories
+    }
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -25,21 +33,42 @@ struct AddTransactionView: View {
                     TextField("Amount", text: $amount)
                         .keyboardType(.decimalPad)
                         .textFieldStyle(.roundedBorder)
-
+                    
                     Picker("Type", selection: $transactionType) {
                         Text("Expense").tag("Expense")
                         Text("Income").tag("Income")
                     }
                     .pickerStyle(.segmented)
-                    .onChange(of: transactionType) {
-                        category = transactionType == "Income" ? TransactionCategory.incomeCategories[0] : TransactionCategory.expenseCategories[1]
+                    .onChange(of: transactionType) { newValue in
+                        if newValue == "Income" {
+                            if let firstIncome = categoryManager.incomeCategories.first {
+                                selectedCategory = firstIncome
+                            }
+                        } else {
+                            if let firstExpense = categoryManager.expenseCategories.first {
+                                selectedCategory = firstExpense
+                            }
+                        }
                     }
                 }
-
+                
                 Section(header: Text("Category")) {
-                    Picker("Select Category", selection: $category) {
-                        ForEach(availableCategories, id: \.self) { category in
-                            Text(category.rawValue).tag(category)
+                    List {
+                        ForEach(availableCategories) { category in
+                            HStack {
+                                Image(systemName: category.icon)
+                                    .foregroundColor(category.color)
+                                Text(category.name)
+                                Spacer()
+                                if selectedCategory.id == category.id {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedCategory = category
+                            }
                         }
                     }
                 }
@@ -51,7 +80,7 @@ struct AddTransactionView: View {
                         if let amountValue = Double(amount) {
                             viewModel.addTransaction(
                                 amount: amountValue,
-                                category: category,
+                                category: selectedCategory,
                                 isIncome: transactionType == "Income"
                             )
                             presentationMode.wrappedValue.dismiss()

@@ -9,6 +9,7 @@ import SwiftUICore
 
 struct DailySummaryView: View {
     let transactions: [Transaction]
+    @EnvironmentObject private var currencyManager: CurrencyManager
 
     var dailyTotal: Double {
         let income = transactions.filter { $0.isIncome }.reduce(0) {
@@ -26,7 +27,7 @@ struct DailySummaryView: View {
                 Text("Today's Overview")
                     .font(.headline)
                 Spacer()
-                Text(formatCurrency(dailyTotal))
+                Text(currencyManager.formatCurrency(dailyTotal))
                     .font(.headline)
                     .foregroundColor(dailyTotal >= 0 ? .green : .red)
             }

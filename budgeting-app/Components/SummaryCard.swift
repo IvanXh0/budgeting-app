@@ -8,7 +8,6 @@
 import SwiftUICore
 import UIKit
 
-
 struct SummaryCard: View {
     let income: Double
     let expenses: Double
@@ -28,28 +27,5 @@ struct SummaryCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding()
-    }
-}
-
-struct SummaryItem: View {
-    let title: String
-    let amount: Double
-    let color: Color
-
-    var body: some View {
-        VStack(spacing: 4) {
-            Text(title)
-                .font(.subheadline)
-                .foregroundColor(.primary)
-                .lineLimit(1)
-                .truncationMode(.tail)
-            
-            Text(amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                .font(.body)
-                .bold()
-                .foregroundColor(color)
-                .minimumScaleFactor(0.8)
-                .lineLimit(1)
-        }
     }
 }

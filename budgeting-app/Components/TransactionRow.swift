@@ -9,6 +9,7 @@ import SwiftUICore
 
 struct TransactionRow: View {
     let transaction: Transaction
+    @EnvironmentObject var currencyManager: CurrencyManager
 
     var body: some View {
         HStack(spacing: 16) {
@@ -21,7 +22,7 @@ struct TransactionRow: View {
                 )
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(transaction.category.rawValue)
+                Text(transaction.category.name)
                     .font(.headline)
                 Text(transaction.date, style: .date)
                     .font(.caption)
@@ -30,7 +31,7 @@ struct TransactionRow: View {
 
             Spacer()
 
-            Text(formatCurrency(transaction.amount, isIncome: transaction.isIncome))
+            Text(currencyManager.formatCurrency(transaction.amount, isIncome: transaction.isIncome))
                 .font(.headline)
                 .foregroundColor(transaction.isIncome ? .green : .red)
         }

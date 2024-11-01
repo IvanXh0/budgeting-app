@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import SwiftUICore
 
 class TransactionViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
+    @StateObject private var categoryManager = CategoryManager()
     
-    func addTransaction(amount: Double, category: TransactionCategory, isIncome: Bool) {
+    func addTransaction(amount: Double, category: CategoryItem, isIncome: Bool) {
         let currentDate = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: Date())) ?? Date()
 
         let transaction = Transaction(
@@ -26,18 +28,17 @@ class TransactionViewModel: ObservableObject {
     
     func monthlySummary(for date: Date = Date()) -> MonthlySummary {
         let start = date.startOfMonth
-          let end = date.endOfMonth
+        let end = date.endOfMonth
           
-          let monthTransactions = transactions.filter { transaction in
-              let isInRange = transaction.date >= start && transaction.date <= end
-              return isInRange
-          }
+        let monthTransactions = transactions.filter { transaction in
+            let isInRange = transaction.date >= start && transaction.date <= end
+            return isInRange
+        }
           
-        
         let income = monthTransactions.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
         let expenses = monthTransactions.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
         
-        var expensesByCategory: [TransactionCategory: Double] = [:]
+        var expensesByCategory: [CategoryItem: Double] = [:]
         monthTransactions.filter { !$0.isIncome }.forEach { transaction in
             expensesByCategory[transaction.category, default: 0] += transaction.amount
         }

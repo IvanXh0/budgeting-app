@@ -5,18 +5,19 @@
 //  Created by Ivan Apostolovski on 31.10.24.
 //
 
-import SwiftUICore
 import SwiftUI
-
+import SwiftUICore
 
 struct ContentView: View {
     @StateObject var viewModel = TransactionViewModel()
+    @StateObject var categoryManager = CategoryManager()
+    @StateObject var currencyManager = CurrencyManager()
     @State private var showAddTransaction = false
     @State private var selectedTab = 0
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            // Dashboard Tab
+            // dashboard
             NavigationStack {
                 ScrollView {
                     VStack(spacing: 20) {
@@ -40,15 +41,25 @@ struct ContentView: View {
             }
             .tag(0)
 
-            // Calendar Tab
+            // calendar
             TransactionCalendarView(viewModel: viewModel)
                 .tabItem {
                     Label("Calendar", systemImage: "calendar")
                 }
                 .tag(1)
+
+            // settings
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
+                .tag(2)
         }
         .sheet(isPresented: $showAddTransaction) {
-            AddTransactionView(viewModel: viewModel)
+            AddTransactionView(viewModel: viewModel, categoryManager: categoryManager)
+                .environmentObject(categoryManager)
         }
+        .environmentObject(categoryManager)
+        .environmentObject(currencyManager)
     }
 }
