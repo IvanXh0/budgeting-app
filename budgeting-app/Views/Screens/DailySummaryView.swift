@@ -7,13 +7,16 @@
 
 import SwiftUICore
 
-
 struct DailySummaryView: View {
     let transactions: [Transaction]
 
     var dailyTotal: Double {
-        let income = transactions.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
-        let expenses = transactions.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
+        let income = transactions.filter { $0.isIncome }.reduce(0) {
+            $0 + $1.amount
+        }
+        let expenses = transactions.filter { !$0.isIncome }.reduce(0) {
+            $0 + $1.amount
+        }
         return income - expenses
     }
 
@@ -23,7 +26,7 @@ struct DailySummaryView: View {
                 Text("Today's Overview")
                     .font(.headline)
                 Spacer()
-                Text(dailyTotal >= 0 ? "+$\(dailyTotal, specifier: "%.2f")" : "-$\(abs(dailyTotal), specifier: "%.2f")")
+                Text(formatCurrency(dailyTotal))
                     .font(.headline)
                     .foregroundColor(dailyTotal >= 0 ? .green : .red)
             }

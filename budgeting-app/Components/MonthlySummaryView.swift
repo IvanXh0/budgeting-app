@@ -5,55 +5,86 @@
 //  Created by Ivan Apostolovski on 31.10.24.
 //
 
-import SwiftUICore
+import SwiftUI
 import Charts
-import UIKit
 
-
+import SwiftUI
 import Charts
 
 struct MonthlySummaryView: View {
     let summary: MonthlySummary
 
     var body: some View {
-        VStack(spacing: 16) {
-            // Summary Cards
-            HStack(spacing: 12) {
-                Spacer()
-                SummaryCard(title: "Income", amount: summary.income, color: .green)
-                SummaryCard(title: "Expenses", amount: summary.expenses, color: .red)
-                SummaryCard(title: "Balance", amount: summary.balance, color: summary.balance >= 0 ? .blue : .red)
-                Spacer()
+        VStack(spacing: 32) {
+            HStack(spacing: 16) {
+                SummaryCard(income: summary.income, expenses: summary.expenses, balance: summary.balance)
             }
+            .padding(.horizontal)
+            .frame(maxWidth: .infinity)
 
-            // Category Breakdown using Charts
-            VStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: 16) {
                 Text("Expenses by Category")
-                    .font(.headline)
-                    .padding(.top)
+                    .font(.title3)
+                    .bold()
+                    .padding(.horizontal)
 
-                Chart {
-                    ForEach(Array(summary.expensesByCategory.keys), id: \.self) { category in
-                        if let amount = summary.expensesByCategory[category] {
-                            BarMark(
-                                x: .value("Category", category.rawValue),
-                                y: .value("Amount", amount)
+                if summary.expensesByCategory.isEmpty {
+                    Text("No expenses this month")
+                        .foregroundColor(.gray)
+                        .padding()
+                } else {
+                    Chart {
+                        ForEach(summary.expensesByCategory.sorted(by: { $0.value > $1.value }), id: \.key) { category, amount in
+                            SectorMark(
+                                angle: .value("Amount", amount),
+                                innerRadius: .ratio(0.5),
+                                angularInset: 1.0
                             )
                             .foregroundStyle(category.color)
+                            .annotation(position: .overlay) {
+                                VStack(spacing: 2) {
+                                    Text(category.rawValue)
+                                        .font(.caption2)
+                                        .bold()
+                                        .foregroundColor(.white)
+                                    Text(amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                        .font(.caption2)
+                                        .foregroundColor(.white)
+                                }
+                                .padding(4)
+                                .background(Color.black.opacity(0.7))
+                                .cornerRadius(4)
+                            }
+                        }
+                    }
+                    .frame(height: 300)
+                    .padding(.horizontal)
+                    .chartLegend(position: .bottom) {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                ForEach(summary.expensesByCategory.keys.sorted(), id: \.self) { category in
+                                    HStack(spacing: 8) {
+                                        Circle()
+                                            .fill(category.color)
+                                            .frame(width: 14, height: 14)
+                                        Text(category.rawValue)
+                                            .font(.caption)
+                                            .foregroundColor(.primary)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
                         }
                     }
                 }
-                .frame(height: 200)
-                .chartYAxis {
-                    AxisMarks(position: .leading)
-                }
-                .padding(.horizontal)
             }
-            .padding()
-            .background(RoundedRectangle(cornerRadius: 10)
-                .fill(Color(UIColor.secondarySystemBackground))
-                .shadow(radius: 2))
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(UIColor.systemBackground))
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+            )
+            .padding(.horizontal)
         }
-        .padding()
+        .padding(.vertical)
     }
 }

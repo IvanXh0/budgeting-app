@@ -7,12 +7,11 @@
 
 import SwiftUICore
 
-
 struct TransactionRow: View {
     let transaction: Transaction
 
     var body: some View {
-        HStack(spacing: 16) { // Increased spacing from 12 to 16
+        HStack(spacing: 16) {
             Image(systemName: transaction.category.icon)
                 .foregroundColor(transaction.category.color)
                 .frame(width: 30, height: 30)
@@ -31,11 +30,11 @@ struct TransactionRow: View {
 
             Spacer()
 
-            Text(transaction.isIncome ? "+$\(transaction.amount, specifier: "%.2f")" : "-$\(transaction.amount, specifier: "%.2f")")
+            Text(formatCurrency(transaction.amount, isIncome: transaction.isIncome))
                 .font(.headline)
                 .foregroundColor(transaction.isIncome ? .green : .red)
         }
         .padding(.vertical, 8)
-        .padding(.horizontal, 16) 
+        .padding(.horizontal, 16)
     }
 }

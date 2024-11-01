@@ -11,8 +11,12 @@ struct AddTransactionView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: TransactionViewModel
     @State private var amount = ""
-    @State private var category = TransactionCategory.other
-    @State private var transactionType = "Expense" // Use a string or enum for clarity
+    @State private var category = TransactionCategory.food
+    @State private var transactionType = "Expense"
+
+    private var availableCategories: [TransactionCategory] {
+        transactionType == "Income" ? TransactionCategory.incomeCategories : TransactionCategory.expenseCategories
+    }
 
     var body: some View {
         NavigationStack {
@@ -21,17 +25,20 @@ struct AddTransactionView: View {
                     TextField("Amount", text: $amount)
                         .keyboardType(.decimalPad)
                         .textFieldStyle(.roundedBorder)
-                    
+
                     Picker("Type", selection: $transactionType) {
                         Text("Expense").tag("Expense")
                         Text("Income").tag("Income")
                     }
                     .pickerStyle(.segmented)
+                    .onChange(of: transactionType) {
+                        category = transactionType == "Income" ? TransactionCategory.incomeCategories[0] : TransactionCategory.expenseCategories[1]
+                    }
                 }
-                
+
                 Section(header: Text("Category")) {
                     Picker("Select Category", selection: $category) {
-                        ForEach(TransactionCategory.allCases, id: \.self) { category in
+                        ForEach(availableCategories, id: \.self) { category in
                             Text(category.rawValue).tag(category)
                         }
                     }
