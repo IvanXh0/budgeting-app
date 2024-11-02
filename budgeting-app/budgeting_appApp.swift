@@ -6,14 +6,23 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 @main
 struct BudgetApp: App {
-    @StateObject private var categoryManager = CategoryManager()
+    init() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+            if success {
+                print("Notification permission granted")
+            } else if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(categoryManager)
         }
     }
 }

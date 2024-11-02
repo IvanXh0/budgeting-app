@@ -24,17 +24,24 @@ struct BudgetView: View {
         let calendar = Calendar.current
         let now = Date()
         
+        let spending: Double
         switch budget.period {
         case .monthly:
             let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: now))!
-            return transactionManager.getExpensesForDateRange(from: startOfMonth, to: now)
+            spending = transactionManager.getExpensesForDateRange(from: startOfMonth, to: now)
         case .weekly:
             let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now))!
-            return transactionManager.getExpensesForDateRange(from: startOfWeek, to: now)
+            spending = transactionManager.getExpensesForDateRange(from: startOfWeek, to: now)
         case .yearly:
             let startOfYear = calendar.date(from: calendar.dateComponents([.year], from: now))!
-            return transactionManager.getExpensesForDateRange(from: startOfYear, to: now)
+            spending = transactionManager.getExpensesForDateRange(from: startOfYear, to: now)
         }
+        
+        DispatchQueue.main.async {
+            budgetManager.checkBudgetThresholds(currentSpending: spending)
+        }
+        
+        return spending
     }
     
     private var remainingBudget: Double {

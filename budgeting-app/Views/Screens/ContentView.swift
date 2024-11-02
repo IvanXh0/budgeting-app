@@ -53,14 +53,14 @@ struct ContentView: View {
                 .tabItem {
                     Label("Budget", systemImage: "chart.pie.fill")
                 }
-                .tag(3)
+                .tag(2)
 
             // settings
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
-                .tag(2)
+                .tag(3)
         }
         .sheet(isPresented: $showAddTransaction) {
             AddTransactionView(categoryManager: categoryManager) // Updated initialization
