@@ -97,3 +97,15 @@ class TransactionManager: ObservableObject {
         }.sorted { $0.date > $1.date }
     }
 }
+
+extension TransactionManager {
+    func getExpensesForDateRange(from startDate: Date, to endDate: Date) -> Double {
+        let rangeTransactions = transactions.filter { transaction in
+            !transaction.isIncome &&
+                transaction.date >= startDate &&
+                transaction.date <= endDate
+        }
+        
+        return rangeTransactions.reduce(0) { $0 + $1.amount }
+    }
+}

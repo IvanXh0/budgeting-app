@@ -11,6 +11,7 @@ struct ContentView: View {
     @StateObject var categoryManager = CategoryManager()
     @StateObject var currencyManager = CurrencyManager()
     @StateObject var transactionManager = TransactionManager()
+    @StateObject var budgetManager = BudgetManager()
     @State private var showAddTransaction = false
     @State private var selectedTab = 0
 
@@ -47,6 +48,13 @@ struct ContentView: View {
                 }
                 .tag(1)
 
+            // budget
+            BudgetView()
+                .tabItem {
+                    Label("Budget", systemImage: "chart.pie.fill")
+                }
+                .tag(3)
+
             // settings
             SettingsView()
                 .tabItem {
@@ -60,5 +68,6 @@ struct ContentView: View {
         .environmentObject(categoryManager)
         .environmentObject(currencyManager)
         .environmentObject(transactionManager)
+        .environmentObject(budgetManager)
     }
 }

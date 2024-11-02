@@ -20,7 +20,7 @@ class CurrencyManager: ObservableObject {
             ?? "USD"
     }
 
-    func formatCurrency(_ amount: Double, isIncome: Bool? = nil) -> String {
+    func formatCurrency(_ amount: Double, isIncome: Bool? = nil, addSigns: Bool? = true) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.maximumFractionDigits = 2
@@ -28,6 +28,10 @@ class CurrencyManager: ObservableObject {
 
         let number = NSNumber(value: abs(amount))
         let formattedNumber = formatter.string(from: number) ?? ""
+
+        if addSigns == false {
+            return formattedNumber
+        }
 
         if let isIncome = isIncome {
             return isIncome ? "+\(formattedNumber)" : "-\(formattedNumber)"
