@@ -20,7 +20,7 @@ struct DailySummarySection: View {
 
             DailySummaryView(transactions: transactionManager.dailyTransactions())
                 .background(RoundedRectangle(cornerRadius: 10)
-                    .fill(Color(UIColor.secondarySystemBackground))
+                    .fill(Color(UIColor.systemBackground))
                     .shadow(radius: 2))
                 .padding(.horizontal)
         }

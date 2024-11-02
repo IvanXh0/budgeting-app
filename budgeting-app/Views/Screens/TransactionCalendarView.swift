@@ -35,7 +35,7 @@ struct TransactionCalendarView: View {
                         .padding()
                     Spacer()
                 }
-            }
+                    }
             .navigationTitle("Calendar")
         }
     }

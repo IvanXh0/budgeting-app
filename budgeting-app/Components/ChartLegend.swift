@@ -26,6 +26,7 @@ struct ChartLegend: View {
                 }
             }
             .padding(.horizontal)
+            .padding(.bottom, 8)
         }
     }
 }

@@ -26,8 +26,9 @@ struct SummaryItem: View {
                 .bold()
                 .foregroundColor(color)
                 .minimumScaleFactor(0.8)
-                .lineLimit(1)
+                .lineLimit(2)
                 .truncationMode(.tail)
+                .multilineTextAlignment(.center)
         }
     }
 }

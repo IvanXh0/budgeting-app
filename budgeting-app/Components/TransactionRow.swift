@@ -41,7 +41,7 @@ struct TransactionRow: View {
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 16)
-        .background(Color(UIColor.secondarySystemBackground))
+        .background(Color(UIColor.systemBackground))
         .contentShape(Rectangle())
         .gesture(
             LongPressGesture(minimumDuration: 0.5)

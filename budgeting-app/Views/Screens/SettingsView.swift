@@ -11,7 +11,9 @@ import SwiftUICore
 struct SettingsView: View {
     @EnvironmentObject var categoryManager: CategoryManager
     @EnvironmentObject var currencyManager: CurrencyManager
+    @EnvironmentObject var transactionManager: TransactionManager
     @State private var showingAddCategory = false
+    @State private var showingDeleteHistoryDialog = false
     
     var body: some View {
         NavigationView {
@@ -49,6 +51,23 @@ struct SettingsView: View {
                         for index in offsets {
                             let categoryToDelete = expenseCategoriesArray[index]
                             categoryManager.deleteCategory(categoryToDelete)
+                        }
+                    }
+                }
+                
+                Section(header: Text("General")) {
+                    Button(action: {
+                        showingDeleteHistoryDialog = true
+                    }) {
+                        Label("Clear All Data", systemImage: "trash")
+                            .foregroundColor(.red)
+                    }
+                    .confirmationDialog("Are you sure you want to delete all data? This action is irreversible", isPresented: $showingDeleteHistoryDialog, titleVisibility: .visible) {
+                        Button("Confirm", role: .destructive) {
+                            transactionManager.deleteAllTransactions()
+                        }
+                        Button("Cancel", role: .cancel) {
+                            showingDeleteHistoryDialog = false
                         }
                     }
                 }

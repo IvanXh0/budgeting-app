@@ -25,6 +25,7 @@ struct MonthlySummaryView: View {
                     .font(.title3)
                     .bold()
                     .padding(.horizontal)
+                    .padding(.top, 8)
                 
                 if summary.expensesByCategory.isEmpty {
                     Text("No expenses this month")

@@ -38,6 +38,10 @@ class TransactionManager: ObservableObject {
         transactions.remove(atOffsets: offsets)
     }
     
+    func deleteAllTransactions() {
+        transactions.removeAll()
+    }
+    
     private func saveTransactions() {
         do {
             let encoder = JSONEncoder()

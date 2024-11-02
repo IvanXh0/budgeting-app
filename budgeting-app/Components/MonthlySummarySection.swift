@@ -12,7 +12,7 @@ struct MonthlySummarySection: View {
     @EnvironmentObject var transactionManager: TransactionManager
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Monthly Overview")
                 .font(.title2)
                 .bold()
