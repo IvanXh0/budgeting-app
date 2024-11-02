@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MonthlySummaryView: View {
     let summary: MonthlySummary
+    @EnvironmentObject var transactionManager: TransactionManager
     
     var body: some View {
         VStack(spacing: 32) {

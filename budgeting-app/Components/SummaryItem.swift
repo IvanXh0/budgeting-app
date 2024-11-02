@@ -27,6 +27,7 @@ struct SummaryItem: View {
                 .foregroundColor(color)
                 .minimumScaleFactor(0.8)
                 .lineLimit(1)
+                .truncationMode(.tail)
         }
     }
 }

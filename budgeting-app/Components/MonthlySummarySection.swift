@@ -8,9 +8,8 @@
 import SwiftUICore
 import UIKit
 
-
 struct MonthlySummarySection: View {
-    @ObservedObject var viewModel: TransactionViewModel
+    @EnvironmentObject var transactionManager: TransactionManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -19,7 +18,7 @@ struct MonthlySummarySection: View {
                 .bold()
                 .padding(.horizontal)
 
-            MonthlySummaryView(summary: viewModel.monthlySummary())
+            MonthlySummaryView(summary: transactionManager.monthlySummary())
         }
     }
 }

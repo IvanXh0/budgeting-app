@@ -5,19 +5,17 @@
 //  Created by Ivan Apostolovski on 31.10.24.
 //
 
+import SwiftUI
 import SwiftUICore
 
 struct DailySummaryView: View {
     let transactions: [Transaction]
-    @EnvironmentObject private var currencyManager: CurrencyManager
+    @EnvironmentObject var transactionManager: TransactionManager
+    @EnvironmentObject var currencyManager: CurrencyManager
 
     var dailyTotal: Double {
-        let income = transactions.filter { $0.isIncome }.reduce(0) {
-            $0 + $1.amount
-        }
-        let expenses = transactions.filter { !$0.isIncome }.reduce(0) {
-            $0 + $1.amount
-        }
+        let income = transactions.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
+        let expenses = transactions.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
         return income - expenses
     }
 
@@ -40,6 +38,11 @@ struct DailySummaryView: View {
             } else {
                 ForEach(transactions) { transaction in
                     TransactionRow(transaction: transaction)
+                }
+                .onDelete { indexSet in
+                    for index in indexSet {
+                        transactionManager.deleteTransaction(transactions[index])
+                    }
                 }
             }
         }

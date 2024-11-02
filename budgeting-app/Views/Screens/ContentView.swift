@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-import SwiftUICore
 
 struct ContentView: View {
-    @StateObject var viewModel = TransactionViewModel()
     @StateObject var categoryManager = CategoryManager()
     @StateObject var currencyManager = CurrencyManager()
+    @StateObject var transactionManager = TransactionManager()
     @State private var showAddTransaction = false
     @State private var selectedTab = 0
 
@@ -19,10 +18,10 @@ struct ContentView: View {
         TabView(selection: $selectedTab) {
             // dashboard
             NavigationStack {
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     VStack(spacing: 20) {
-                        DailySummarySection(viewModel: viewModel)
-                        MonthlySummarySection(viewModel: viewModel)
+                        DailySummarySection()
+                        MonthlySummarySection()
                     }
                     .padding()
                 }
@@ -42,7 +41,7 @@ struct ContentView: View {
             .tag(0)
 
             // calendar
-            TransactionCalendarView(viewModel: viewModel)
+            TransactionCalendarView()
                 .tabItem {
                     Label("Calendar", systemImage: "calendar")
                 }
@@ -56,10 +55,10 @@ struct ContentView: View {
                 .tag(2)
         }
         .sheet(isPresented: $showAddTransaction) {
-            AddTransactionView(viewModel: viewModel, categoryManager: categoryManager)
-                .environmentObject(categoryManager)
+            AddTransactionView(categoryManager: categoryManager) // Updated initialization
         }
         .environmentObject(categoryManager)
         .environmentObject(currencyManager)
+        .environmentObject(transactionManager)
     }
 }

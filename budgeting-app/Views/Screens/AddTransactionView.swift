@@ -9,14 +9,14 @@ import SwiftUI
 
 struct AddTransactionView: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: TransactionViewModel
+    @EnvironmentObject var transactionManager: TransactionManager
     @EnvironmentObject var categoryManager: CategoryManager
+    @EnvironmentObject var currencyManager: CurrencyManager
     @State private var amount = ""
     @State private var transactionType = "Expense"
     @State private var selectedCategory: CategoryItem
     
-    init(viewModel: TransactionViewModel, categoryManager: CategoryManager) {
-        self.viewModel = viewModel
+    init(categoryManager: CategoryManager) {
         let defaultCategory = categoryManager.expenseCategories.first ??
             CategoryItem(name: "Other", icon: "questionmark.circle.fill", color: .gray, isIncome: false, isDefault: true)
         _selectedCategory = State(initialValue: defaultCategory)
@@ -78,7 +78,7 @@ struct AddTransactionView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         if let amountValue = Double(amount) {
-                            viewModel.addTransaction(
+                            transactionManager.addTransaction(
                                 amount: amountValue,
                                 category: selectedCategory,
                                 isIncome: transactionType == "Income"

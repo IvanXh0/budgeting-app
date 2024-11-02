@@ -8,9 +8,8 @@
 import SwiftUICore
 import UIKit
 
-
 struct DailySummarySection: View {
-    @ObservedObject var viewModel: TransactionViewModel
+    @EnvironmentObject var transactionManager: TransactionManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -19,7 +18,7 @@ struct DailySummarySection: View {
                 .bold()
                 .padding(.horizontal)
 
-            DailySummaryView(transactions: viewModel.dailyTransactions())
+            DailySummaryView(transactions: transactionManager.dailyTransactions())
                 .background(RoundedRectangle(cornerRadius: 10)
                     .fill(Color(UIColor.secondarySystemBackground))
                     .shadow(radius: 2))

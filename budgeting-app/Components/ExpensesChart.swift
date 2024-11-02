@@ -9,6 +9,7 @@ import Charts
 import SwiftUI
 
 struct ExpensesChart: View {
+    @EnvironmentObject var currencyManager: CurrencyManager
     let expensesByCategory: [CategoryItem: Double]
 
     var body: some View {
@@ -26,7 +27,7 @@ struct ExpensesChart: View {
                             .font(.caption2)
                             .bold()
                             .foregroundColor(.white)
-                        Text(item.value, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        Text(currencyManager.formatCurrency(item.value))
                             .font(.caption2)
                             .foregroundColor(.white)
                     }

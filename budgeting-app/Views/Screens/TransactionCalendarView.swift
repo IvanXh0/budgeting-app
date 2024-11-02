@@ -5,12 +5,11 @@
 //  Created by Ivan Apostolovski on 31.10.24.
 //
 
-import SwiftUICore
 import SwiftUI
-
+import SwiftUICore
 
 struct TransactionCalendarView: View {
-    @ObservedObject var viewModel: TransactionViewModel
+    @EnvironmentObject var transactionManager: TransactionManager
     @State private var selectedDate = Date()
 
     var body: some View {
@@ -42,7 +41,7 @@ struct TransactionCalendarView: View {
     }
 
     private func transactionsForDate() -> [Transaction]? {
-        let filtered = viewModel.transactions.filter {
+        let filtered = transactionManager.transactions.filter {
             Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
         }
         return filtered.isEmpty ? nil : filtered.sorted { $0.date > $1.date }

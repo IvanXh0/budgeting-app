@@ -22,7 +22,7 @@ struct SettingsView: View {
                             Text(currency).tag(currency)
                         }
                     }
-                    .onChange(of: currencyManager.selectedCurrency) { _ in
+                    .onChange(of: currencyManager.selectedCurrency) {
                         UserDefaults.standard.set(currencyManager.selectedCurrency, forKey: "userCurrency")
                     }
                 }

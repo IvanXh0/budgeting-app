@@ -1,17 +1,23 @@
-
-//  TransactionViewModel.swift
+//
+//  TransactionManager.swift
 //  budgeting-app
 //
-//  Created by Ivan Apostolovski on 31.10.24.
+//  Created by Ivan Apostolovski on 2.11.24.
 //
 
 import Foundation
-import SwiftUICore
 
-class TransactionViewModel: ObservableObject {
-    @Published var transactions: [Transaction] = []
-    @StateObject private var categoryManager = CategoryManager()
+class TransactionManager: ObservableObject {
+    @Published var transactions: [Transaction] = [] {
+        didSet {
+            saveTransactions()
+        }
+    }
     
+    init() {
+        loadTransactions()
+    }
+
     func addTransaction(amount: Double, category: CategoryItem, isIncome: Bool) {
         let currentDate = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: Date())) ?? Date()
 
@@ -22,19 +28,49 @@ class TransactionViewModel: ObservableObject {
             isIncome: isIncome
         )
         transactions.append(transaction)
+    }
 
-        objectWillChange.send()
+    func deleteTransaction(_ transaction: Transaction) {
+        transactions.removeAll { $0.id == transaction.id }
+    }
+
+    func deleteTransactions(at offsets: IndexSet) {
+        transactions.remove(atOffsets: offsets)
+    }
+    
+    private func saveTransactions() {
+        do {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            let data = try encoder.encode(transactions)
+            UserDefaults.standard.set(data, forKey: "transactions")
+        } catch {
+            print("Error saving transactions: \(error)")
+        }
+    }
+    
+    private func loadTransactions() {
+        if let data = UserDefaults.standard.data(forKey: "transactions") {
+            do {
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601
+                transactions = try decoder.decode([Transaction].self, from: data)
+            } catch {
+                print("Error loading transactions: \(error)")
+                transactions = []
+            }
+        }
     }
     
     func monthlySummary(for date: Date = Date()) -> MonthlySummary {
         let start = date.startOfMonth
         let end = date.endOfMonth
-          
+        
         let monthTransactions = transactions.filter { transaction in
             let isInRange = transaction.date >= start && transaction.date <= end
             return isInRange
         }
-          
+        
         let income = monthTransactions.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
         let expenses = monthTransactions.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
         

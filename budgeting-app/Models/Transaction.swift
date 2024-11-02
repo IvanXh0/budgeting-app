@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUICore
 
-struct Transaction: Identifiable {
+struct Transaction: Identifiable, Codable, Equatable {
     let id = UUID()
     var amount: Double
     var category: CategoryItem
