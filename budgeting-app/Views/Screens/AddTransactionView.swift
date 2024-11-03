@@ -39,8 +39,8 @@ struct AddTransactionView: View {
                         Text("Income").tag("Income")
                     }
                     .pickerStyle(.segmented)
-                    .onChange(of: transactionType) { newValue in
-                        if newValue == "Income" {
+                    .onChange(of: transactionType) {
+                        if transactionType == "Income" {
                             if let firstIncome = categoryManager.incomeCategories.first {
                                 selectedCategory = firstIncome
                             }

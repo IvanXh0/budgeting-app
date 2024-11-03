@@ -14,18 +14,23 @@ struct SettingsView: View {
     @EnvironmentObject var transactionManager: TransactionManager
     @State private var showingAddCategory = false
     @State private var showingDeleteHistoryDialog = false
+    @State private var showingCurrencyPicker = false
     
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Currency")) {
-                    Picker("Select Currency", selection: $currencyManager.selectedCurrency) {
-                        ForEach(["USD", "EUR", "MKD"], id: \.self) { currency in
-                            Text(currency).tag(currency)
+                    Button(action: {
+                        showingCurrencyPicker = true
+                    }) {
+                        HStack {
+                            Text("Select Currency")
+                            Spacer()
+                            if let currency = Currency.allCurrencies.first(where: { $0.id == currencyManager.selectedCurrency }) {
+                                Text("\(currency.flag) \(currency.id) (\(currency.symbol))")
+                                    .foregroundColor(.gray)
+                            }
                         }
-                    }
-                    .onChange(of: currencyManager.selectedCurrency) {
-                        UserDefaults.standard.set(currencyManager.selectedCurrency, forKey: "userCurrency")
                     }
                 }
                 
@@ -83,6 +88,9 @@ struct SettingsView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     EditButton()
                 }
+            }
+            .sheet(isPresented: $showingCurrencyPicker) {
+                CurrencyPickerView()
             }
             .sheet(isPresented: $showingAddCategory) {
                 AddCategoryView(categoryManager: categoryManager)

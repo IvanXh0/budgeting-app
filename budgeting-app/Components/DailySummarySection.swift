@@ -13,11 +13,6 @@ struct DailySummarySection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Today's Transactions")
-                .font(.title2)
-                .bold()
-                .padding(.horizontal)
-
             DailySummaryView(transactions: transactionManager.dailyTransactions())
                 .background(RoundedRectangle(cornerRadius: 10)
                     .fill(Color(UIColor.systemBackground))
